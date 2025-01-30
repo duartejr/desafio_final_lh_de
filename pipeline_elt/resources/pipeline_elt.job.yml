@@ -4,11 +4,10 @@ resources:
     pipeline_elt_job:
       name: pipeline_elt_job
 
-      # trigger:
-      #   # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
-      #   periodic:
-      #     interval: 1
-      #     unit: DAYS
+      schedule:
+        quartz_cron_expression: "0 0 0 * * ?" # daily at midnight
+        timezone_id: UTC
+        pause_status: PAUSED
 
       email_notifications:
         on_failure:
