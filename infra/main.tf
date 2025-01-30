@@ -1,2 +1,13 @@
-# This file can remain minimal or be used to include any additional resources
-# or logic that isn't covered in the other files.
+terraform {
+  required_providers {
+    databricks = {
+      source  = "databricks/databricks"
+      version = "1.62.1"
+    }
+  }
+}
+
+provider "databricks" {
+  host  = var.databricks_host
+  token = var.databricks_token
+}
