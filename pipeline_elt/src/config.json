@@ -8,7 +8,7 @@
 
   "tables": {
     "CountryRegionCurrency": {
-      "primary_key": "CountryRegionCode",
+      "primary_key": ["country_region_code", "currency_code"],
       "stg_name": "country_region_currency",
       "stg_columns": {
         "CountryRegionCode": "country_region_code",
@@ -18,7 +18,7 @@
     },
 
     "CreditCard": {
-      "primary_key": "CreditCardID",
+      "primary_key": ["credit_card_id"],
       "stg_name": "credit_card",
       "stg_columns": {
         "CreditCardID": "credit_card_id",
@@ -31,7 +31,7 @@
     },
 
     "Currency": {
-      "primary_key": "CurrencyCode",
+      "primary_key": ["currency_code"],
       "stg_name": "currency",
       "stg_columns": {
         "CurrencyCode": "currency_code",
@@ -41,7 +41,7 @@
     },
 
     "CurrencyRate": {
-      "primary_key": "CurrencyRateID",
+      "primary_key": ["currency_rate_id"],
       "stg_name": "currency_rate",
       "stg_columns": {
         "CurrencyRateID": "currency_rate_id",
@@ -55,7 +55,7 @@
     },
 
     "Customer": {
-      "primary_key": "CustomerID",
+      "primary_key": ["customer_id"],
       "stg_name": "customer",
       "stg_columns": {
         "CustomerID": "customer_id",
@@ -68,7 +68,7 @@
     },
 
     "PersonCreditCard": {
-      "primary_key": "BusinessEntityID",
+      "primary_key": ["business_entity_id"],
       "stg_name": "person_credit_card",
       "stg_columns": {
         "BusinessEntityID": "business_entity_id",
@@ -78,7 +78,7 @@
     },
 
     "SalesOrderDetail": {
-      "primary_key": "SalesOrderID",
+      "primary_key": ["sales_order_id", "sales_order_detail_id"],
       "stg_name": "sales_order_detail",
       "stg_columns": {
         "SalesOrderID": "sales_order_id",
@@ -95,7 +95,7 @@
     },
 
     "SalesOrderHeader": {
-      "primary_key": "SalesOrderID",
+      "primary_key": ["sales_order_id"],
       "stg_name": "sales_order_header",
       "stg_columns": {
         "SalesOrderID": "sales_order_id",
@@ -125,7 +125,7 @@
     },
 
     "SalesOrderHeaderSalesReason": {
-      "primary_key": "SalesOrderID",
+      "primary_key": ["sales_order_id", "sales_reason_id"],
       "stg_name": "sales_order_header_sales_reason",
       "stg_columns": {
         "SalesOrderID": "sales_order_id",
@@ -135,7 +135,7 @@
     },
 
     "SalesPerson": {
-      "primary_key": "BusinessEntityID",
+      "primary_key": ["business_entity_id"],
       "stg_name": "sales_person",
       "stg_columns": {
         "BusinessEntityID": "business_entity_id",
@@ -150,7 +150,7 @@
     },
 
     "SalesPersonQuotaHistory": {
-      "primary_key": "BusinessEntityID",
+      "primary_key": ["business_entity_id", "quota_date"],
       "stg_name": "sales_person_quota_history",
       "stg_columns": {
         "BusinessEntityID": "business_entity_id",
@@ -161,7 +161,7 @@
     },
 
     "SalesReason": {
-      "primary_key": "SalesReasonID",
+      "primary_key": ["sales_reason_id"],
       "stg_name": "sales_reason",
       "stg_columns": {
         "SalesReasonID": "sales_reason_id",
@@ -172,7 +172,7 @@
     },
 
     "SalesTaxRate": {
-      "primary_key": "SalesTaxRateID",
+      "primary_key": ["sales_tax_rate_id"],
       "stg_name": "sales_tax_rate",
       "stg_columns": {
         "SalesTaxRateID": "sales_tax_rate_id",
@@ -185,7 +185,7 @@
     },
 
     "SalesTerritory": {
-      "primary_key": "TerritoryID",
+      "primary_key": ["territory_id"],
       "stg_name": "sales_territory",
       "stg_columns": {
         "TerritoryID": "territory_id",
@@ -201,7 +201,7 @@
     },
 
     "SalesTerritoryHistory": {
-      "primary_key": "BusinessEntityID",
+      "primary_key": ["business_entity_id", "territory_id"],
       "stg_name": "sales_territory_history",
       "stg_columns": {
         "BusinessEntityID": "business_entity_id",
@@ -213,7 +213,7 @@
     },
 
     "ShoppingCartItem": {
-      "primary_key": "ShoppingCartItemID",
+      "primary_key": ["shopping_cart_item_id", "shopping_cart_id", "date_created", "modified_date"],
       "stg_name": "shopping_cart_item",
       "stg_columns": {
         "ShoppingCartItemID": "shopping_cart_item_id",
@@ -226,7 +226,7 @@
     },
 
     "SpecialOffer": {
-      "primary_key": "SpecialOfferID",
+      "primary_key": ["special_offer_id"],
       "stg_name": "special_offer",
       "stg_columns": {
         "SpecialOfferID": "special_offer_id",
@@ -243,7 +243,7 @@
     },
 
     "SpecialOfferProduct": {
-      "primary_key": "SpecialOfferID",
+      "primary_key": ["special_offer_id", "product_id",	"modified_date"],
       "stg_name": "special_offer_product",
       "stg_columns": {
         "SpecialOfferID": "special_offer_id",
@@ -253,7 +253,7 @@
     },
 
     "Store": {
-      "primary_key": "BusinessEntityID",
+      "primary_key": ["business_entity_id"],
       "stg_name": "store",
       "stg_columns": {
         "BusinessEntityID": "business_entity_id",
