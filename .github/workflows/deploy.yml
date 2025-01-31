@@ -18,6 +18,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.5
+    
+      - name: Make tfvars dynamicaly
+        run: |
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              echo "${{ secrets.TFVARS_PROD }}" > terraform.auto.tfvars
+            else
+              echo "${{ secrets.TFVARS_DEV }}" > terraform.auto.tfvars
+            fi
 
       - name: Define environment variables based on branch
         run: |
