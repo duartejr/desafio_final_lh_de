@@ -20,3 +20,8 @@ variable "databricks_token" {
   type        = string
   sensitive   = true
 }
+
+variable "environment" {
+  description = "Define the environment (dev or prod)"
+  type        = string
+}

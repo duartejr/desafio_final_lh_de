@@ -13,8 +13,8 @@ resource "databricks_catalog" "raw_catalog" {
 }
 
 resource "databricks_schema" "raw_sales_schema" {
-  catalog_name = databricks_catalog.raw_catalog.id
-  name         = "sales"
+  catalog_name = databricks_catalog.raw_catalog.name
+  name         = "${var.environment}_sales"
   comment      = "Contains raw data ingested directly from the sales department."
   properties = merge(
     local.common_tags,
@@ -41,8 +41,8 @@ resource "databricks_catalog" "stg_catalog" {
 }
 
 resource "databricks_schema" "stg_sales_schema" {
-  catalog_name = databricks_catalog.stg_catalog.id
-  name         = "sales"
+  catalog_name = databricks_catalog.stg_catalog.name
+  name         = "${var.environment}_sales"
   comment      = "Holds curated data refined of the sales department."
   properties = merge(
     local.common_tags,
