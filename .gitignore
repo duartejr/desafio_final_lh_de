@@ -3,3 +3,4 @@
 *.terraform
 *.hcl
 *.backup
+.env
