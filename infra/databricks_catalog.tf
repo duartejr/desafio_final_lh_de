@@ -12,11 +12,7 @@ resource "databricks_catalog" "raw_catalog" {
   )
 
   lifecycle {
-    ignore_changes = [
-      name,
-      comment,
-      properties
-    ]
+    prevent_destroy = true
   }
 }
 
@@ -32,11 +28,7 @@ resource "databricks_schema" "raw_sales_schema" {
     }
   )
   lifecycle {
-    ignore_changes = [
-      name,
-      comment,
-      properties
-    ]
+    prevent_destroy = true
   }
 }
 
@@ -52,11 +44,7 @@ resource "databricks_catalog" "stg_catalog" {
     }
   )
   lifecycle {
-    ignore_changes = [
-      name,
-      comment,
-      properties
-    ]
+    prevent_destroy = true
   }
 }
 
@@ -72,10 +60,6 @@ resource "databricks_schema" "stg_sales_schema" {
     }
   )
   lifecycle {
-    ignore_changes = [
-      name,
-      comment,
-      properties
-    ]
+    prevent_destroy = true
   }
 }
