@@ -1,2 +1,9 @@
-# This file can remain minimal or be used to include any additional resources
-# or logic that isn't covered in the other files.
+terraform {
+  required_version = "1.10.5"
+  required_providers {
+    databricks = {
+      source  = "databricks/databricks"
+      version = "1.62.1"
+    }
+  }
+}

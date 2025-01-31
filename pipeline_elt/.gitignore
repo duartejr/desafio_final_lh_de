@@ -3,6 +3,7 @@ build/
 dist/
 __pycache__/
 *.egg-info
-.venv/
+venv/
 scratch/**
 !scratch/README.md
+.env
