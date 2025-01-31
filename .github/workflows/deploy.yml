@@ -19,14 +19,6 @@ jobs:
         with:
           terraform_version: 1.10.5
     
-      - name: Make tfvars dynamicaly
-        run: |
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-              echo "${{ secrets.TFVARS_PROD }}" > terraform.prod.tfvars
-            else
-              echo "${{ secrets.TFVARS_DEV }}" > terraform.dev.tfvars
-            fi
-
       - name: Define environment variables based on branch
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
