@@ -39,9 +39,11 @@ jobs:
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-
-      - name: Init Terraform
-        run: terraform init
+      
+      - name: Terraform Init
+        run: |
+          cd infra
+          terraform init
 
       - name: Apply Terraform
         env:
