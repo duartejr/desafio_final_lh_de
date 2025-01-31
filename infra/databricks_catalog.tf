@@ -1,3 +1,4 @@
+
 resource "databricks_catalog" "raw_catalog" {
   name    = "${var.dev_name}_raw"
   owner   = var.catalog_owner
@@ -9,7 +10,10 @@ resource "databricks_catalog" "raw_catalog" {
       "kind" : "raw data"
     }
   )
-  force_destroy = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "databricks_schema" "raw_sales_schema" {
@@ -23,7 +27,9 @@ resource "databricks_schema" "raw_sales_schema" {
       "kind" : "raw data"
     }
   )
-  force_destroy = true
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "databricks_catalog" "stg_catalog" {
@@ -37,7 +43,9 @@ resource "databricks_catalog" "stg_catalog" {
       "kind" : "processed data"
     }
   )
-  force_destroy = true
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "databricks_schema" "stg_sales_schema" {
@@ -51,5 +59,7 @@ resource "databricks_schema" "stg_sales_schema" {
       "kind" : "processed data"
     }
   )
-  force_destroy = true
+  lifecycle {
+    prevent_destroy = true
+  }
 }
