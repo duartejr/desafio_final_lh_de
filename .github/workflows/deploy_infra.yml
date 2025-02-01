@@ -1,4 +1,4 @@
-name: Deploy to Databricks infrastructure
+name: Create infraestructure into Databricks
 
 on:
   push:
@@ -14,34 +14,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Install Databricks CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
-          databricks --version
 
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.5
-    
-      - name: Define environment variables based on branch
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "TF_ENV=terraform.prod.tfvars" >> $GITHUB_ENV
-          else
-            echo "TF_ENV=terraform.dev.tfvars" >> $GITHUB_ENV
-          fi
 
       - name: Configure Databricks variables
         run: |
-          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
-          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-      
-      - name: Download Terraform state from DBFS
-        run: |
-          cd infra
-          databricks fs cp dbfs:/mnt/terraform/terraform.tfstate ./terraform.tfstate
+          echo "TF_VAR_databricks_host=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "TF_VAR_databricks_host=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
       
       - name: Terraform Init
         run: |
@@ -49,14 +31,6 @@ jobs:
           terraform init
 
       - name: Apply Terraform
-        env:
-          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
-          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           cd infra
           terraform apply -auto-approve -var-file=$TF_ENV
-      
-      - name: Upload Terraform state to DBFS
-        run: |
-          cd infra
-          databricks fs cp ./terraform.tfstate dbfs:/mnt/terraform/terraform.tfstate
