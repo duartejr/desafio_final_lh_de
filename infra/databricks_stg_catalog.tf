@@ -6,7 +6,7 @@ resource "databricks_catalog" "stg_catalog" {
     local.common_tags,
     {
       "purpose" : "staging"
-      "kind" : "processed data"
+      "kind" :"processed data"
     }
   )
   lifecycle {
