@@ -1,10 +1,11 @@
-name: Deploy to Databricks
+name: Deploy to Databricks infrastructure
 
 on:
   push:
     branches:
       - main
-      - dev
+    paths:
+      - 'infra/**'
 
 jobs:
   deploy:
