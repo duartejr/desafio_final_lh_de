@@ -7,18 +7,6 @@ on:
     paths:
       - 'infra/**'
 
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Select environment"
-        required: true
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - prod
-
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
