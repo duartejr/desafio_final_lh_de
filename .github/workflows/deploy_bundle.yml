@@ -33,10 +33,11 @@ jobs:
             DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
             DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           run: |
+            cd pipeline_elt
             if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               echo "Deploying to production"
-              databricks bundle deploy --bundle-folder pipeline_elt --target prod
+              databricks bundle deploy --target prod
             elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
               echo "Deploying to dev"
-              databricks bundle deploy --bundle-folder pipline_elt --target dev
+              databricks bundle deploy --target dev
             fi
