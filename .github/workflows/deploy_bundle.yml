@@ -1,0 +1,41 @@
+name: Deploy Databricks bundle
+
+on:
+    push:
+      branches:
+        - main
+        - dev
+      paths:
+        - 'pipeline_elt/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+        
+        - name: Install Databricks CLI
+          run: |
+            curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+            databricks --version
+        
+        - name: Authenticate Databricks
+          env:
+            DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+            DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          run: |
+            databricks bundle validate --bundle-folder pipeline_elt
+        
+        - name: Deploy to Databricks
+          env:
+            DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+            DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          run: |
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              echo "Deploying to production"
+              databricks bundle deploy --bundle-folder pipeline_elt --target prod
+            elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+              echo "Deploying to dev"
+              databricks bundle deploy --bundle-folder pipline_elt --target dev
+            fi
