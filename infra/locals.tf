@@ -1,7 +1,7 @@
 locals {
   common_tags = {
-    owner       = "antonio.junior"
-    owner-email = "antonio.junior@indicium.tech"
+    owner       = var.dev_name
+    owner-email = var.catalog_owner
     managed-by  = "terraform"
   }
 }
