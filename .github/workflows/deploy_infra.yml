@@ -33,6 +33,11 @@ jobs:
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
       
+      - name: Download Terraform state from DBFS
+        run: |
+          cd infra
+          databricks fs cp dbfs:/mnt/terraform/terraform.tfstate ./terraform.tfstate
+      
       - name: Terraform Init
         run: |
           cd infra
@@ -45,3 +50,8 @@ jobs:
         run: |
           cd infra
           terraform apply -auto-approve -var-file=$TF_ENV
+      
+      - name: Upload Terraform state to DBFS
+        run: |
+          cd infra
+          databricks fs cp ./terraform.tfstate dbfs:/mnt/terraform/terraform.tfstate
