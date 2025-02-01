@@ -31,4 +31,4 @@ jobs:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           cd infra
-          terraform apply -auto-approve -var-file=$TF_ENV
+          terraform apply -auto-approve

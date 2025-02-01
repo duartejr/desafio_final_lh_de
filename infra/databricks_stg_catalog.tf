@@ -26,11 +26,9 @@ resource "databricks_schema" "stg_dev_sales_schema" {
       "environment" : "dev"
     }
   )
-
   lifecycle {
     prevent_destroy = true
   }
-
 }
 
 resource "databricks_schema" "stg_prod_sales_schema" {
@@ -45,9 +43,7 @@ resource "databricks_schema" "stg_prod_sales_schema" {
       "environment" : "prod"
     }
   )
-
   lifecycle {
     prevent_destroy = true
   }
-  
 }
