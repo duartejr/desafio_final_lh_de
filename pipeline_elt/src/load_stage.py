@@ -37,7 +37,7 @@ def read_yaml_file(filepath: str) -> dict:
         raise
 
 
-def read_df(catalog: str, schema: str, table_name: str, ) -> DataFrame:
+def read_raw_df(catalog: str, schema: str, table_name: str, environment: str) -> DataFrame:
     """
     Reads data from a specified table in a Databricks catalog and returns a PySpark DataFrame.
 
@@ -48,12 +48,13 @@ def read_df(catalog: str, schema: str, table_name: str, ) -> DataFrame:
         catalog (str): The name of the Databricks catalog.
         schema (str): The schema within the catalog where the table resides.
         table_name (str): The name of the table to read data from.
-
+        environment (str): Task execution environment: dev or prod
+        
     Returns:
         A PySpark DataFrame containing the data from the specified table.
     """
     spark.sql(f"USE CATALOG {catalog}")
-    df = spark.table(f"{catalog}.{schema}.{table_name}")
+    df = spark.table(f"{catalog}.{environment}_raw_{schema}.raw_{table_name}")
     return df
 
 def load_stg_df(stg_df: DataFrame, catalog: str, schema: str, table_name: str) -> None:
@@ -68,6 +69,7 @@ def load_stg_df(stg_df: DataFrame, catalog: str, schema: str, table_name: str) -
         catalog (str): The name of the Databricks catalog where the staging schema resides.
         schema (str): The name of the staging schema within the catalog.
         table_name (str): The name of the table within the staging schema to load the data into.
+
     """
     spark.sql(f"USE CATALOG {catalog}")
     stg_df.write.format("delta").mode("append").saveAsTable(f"{catalog}.{schema}.{table_name}_stg")
@@ -112,7 +114,7 @@ def insert_origin_columns(df: DataFrame, schema: str, database: str = "adventure
     return df
 
 
-def ingest_data(table_name:str, schema:str, raw_catalog:str, stg_catalog:str, tables_mapping: dict) -> None:
+def ingest_data(table_name:str, schema:str, raw_catalog:str, stg_catalog:str, tables_mapping: dict, environment: str) -> None:
     """
     Ingests transformed data from the raw catalog to the staging catalog.
 
@@ -126,10 +128,11 @@ def ingest_data(table_name:str, schema:str, raw_catalog:str, stg_catalog:str, ta
         raw_catalog (str): The name of the catalog containing the raw data (source).
         stg_catalog (str): The name of the catalog where the transformed data will be stored (target).
         tables_mapping (str): A dictionary defining the column mappings and transformations.     
+        environment (str): Task execution environment: dev or prod
     """
 
     logging.info(f"Runing to table: {table_name}")
-    raw_df = read_df(raw_catalog, schema, table_name, environment)
+    raw_df = read_raw_df(raw_catalog, schema, table_name, environment)
 
     if raw_df.count():
         columns_map = tables_mapping[table_name]["stg_columns"]
@@ -181,5 +184,5 @@ if __name__ == "__main__":
 
         with ThreadPoolExecutor(max_workers=8) as executor:
             executor.map(ingest_data_partial, tables_list)
-        print("oi")
+        
         logging.info("Ingestion finished.")
