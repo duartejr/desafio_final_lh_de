@@ -20,7 +20,7 @@ resources:
             parameters: ["-o", "${var.pipeline_owner}", "-e", "${bundle.environment}", "-d", "2007-01-01 00:00:00"]
           existing_cluster_id: 0114-120134-85ri2w59
         
-        # - task_key: load_stage_data_task
+        # - task_key: load_stage_data_taskdd
         #   notebook_task:
         #     notebook_path: ../src/load_stage.ipynb
         #   depends_on: 
