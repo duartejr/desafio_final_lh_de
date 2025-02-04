@@ -6,6 +6,11 @@ bundle:
 include:
   - resources/*.yml
 
+variables:
+  pipeline_owner:
+    description: The developer owner of this pipeline. 
+    default: antonio_junior
+
 targets:
   dev:
     # The default target uses 'mode: development' to create a development copy.

@@ -15,13 +15,15 @@ resources:
 
       tasks:
         - task_key: extract_raw_data_task
-          notebook_task:
-            notebook_path: ../src/extract_raw.ipynb
+          spark_python_task:
+            python_file: ../src/extract_raw.py
+            parameters: ["-o", "${var.pipeline_owner}", "-e", "${bundle.environment}", "-d", "2007-01-01 00:00:00"]
           existing_cluster_id: 0114-120134-85ri2w59
         
-        - task_key: load_stage_data_task
-          notebook_task:
-            notebook_path: ../src/load_stage.ipynb
+        - task_key: load_stage_data_taskd
+          spark_python_task:
+            python_file: ../src/load_stage.py
+            parameters: ["-o", "${var.pipeline_owner}", "-e", "${bundle.environment}"]
           depends_on: 
             - task_key: extract_raw_data_task
           existing_cluster_id: 0114-120134-85ri2w59
