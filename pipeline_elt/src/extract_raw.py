@@ -109,5 +109,5 @@ if __name__ == "__main__":
 
         with ThreadPoolExecutor(max_workers=8) as executor:
             executor.map(extract_data_partial, tables_list)
-        print("oi")
+        
         print("end of game")
