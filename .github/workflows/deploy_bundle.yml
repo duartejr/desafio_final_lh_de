@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    if: contains(github.event.head_commit.modified, 'pipeline_elt/src/')
+    if: ${{ contains(toJson(github.event.head_commit.modified), 'pipeline_elt/src/') }}
     runs-on: ubuntu-latest
     steps:
         - name: Checkout repository
