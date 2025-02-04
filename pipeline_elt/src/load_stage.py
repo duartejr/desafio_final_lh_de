@@ -181,5 +181,5 @@ if __name__ == "__main__":
 
         with ThreadPoolExecutor(max_workers=8) as executor:
             executor.map(ingest_data_partial, tables_list)
-        print('teste')
+        
         logging.info("Ingestion finished.")
