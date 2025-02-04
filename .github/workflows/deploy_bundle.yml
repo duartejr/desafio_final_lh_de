@@ -22,11 +22,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
       
       - name: Check for changes in pipeline_elt/src
         uses: dorny/paths-filter@v3
         id: filter
         with:
+          base: dev
           filters: |
             src:
               - 'pipeline_elt/src/**'
