@@ -3,3 +3,5 @@ databricks secrets put-secret --json '{
   "key": "<key-name>",
   "string_value": "<secret>"
 }'
+
+reds
