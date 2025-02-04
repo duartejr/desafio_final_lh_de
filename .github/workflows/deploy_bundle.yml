@@ -14,30 +14,45 @@ env:
   DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
 jobs:
-  build:
-    if: ${{ contains(toJson(github.event.head_commit.modified), 'pipeline_elt/src/') }}
+  check_changes:
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
-        
-        - name: Install Databricks CLI
-          run: |
-            curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
-            databricks --version
-        
-        - name: Authenticate Databricks
-          run: |
-            cd pipeline_elt
-            databricks bundle validate
-        
-        - name: Deploy to Databricks
-          run: |
-            cd pipeline_elt
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-              echo "Deploying to production"
-              databricks bundle deploy --target prod
-            elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-              echo "Deploying to dev"
-              databricks bundle deploy --target dev
-            fi
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Check for changes in pipeline_elt/src
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'pipeline_elt/src/**'
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: check_changes
+    if: steps.changes.outputs.src == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks --version
+      
+      - name: Authenticate Databricks
+        run: |
+          cd pipeline_elt
+          databricks bundle validate
+      
+      - name: Deploy to Databricks
+        run: |
+          cd pipeline_elt
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "Deploying to production"
+            databricks bundle deploy --target prod
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            echo "Deploying to dev"
+            databricks bundle deploy --target dev
+          fi
