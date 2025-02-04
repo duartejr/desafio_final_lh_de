@@ -104,10 +104,7 @@ if __name__ == "__main__":
             "password": db_password,
             "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver"
         }
-
-        print(tables_list)
-
-
+        
         extract_data_partial = partial(extract_data, catalog=catalog, schema=schema, first_modified_date=first_modified_date, environment=environment)
 
         with ThreadPoolExecutor(max_workers=8) as executor:
