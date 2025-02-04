@@ -111,3 +111,4 @@ if __name__ == "__main__":
             executor.map(extract_data_partial, tables_list)
         
         logging.info("Extraction finished.")
+        print('here')

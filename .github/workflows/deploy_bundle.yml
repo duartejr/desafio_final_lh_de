@@ -16,8 +16,6 @@ env:
 jobs:
   check_changes:
     runs-on: ubuntu-latest
-    outputs:
-      src_changed: ${{ steps.filter.outputs.src }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
