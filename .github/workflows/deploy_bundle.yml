@@ -29,7 +29,6 @@ jobs:
         uses: dorny/paths-filter@v3
         id: filter
         with:
-          base: dev
           filters: |
             src:
               - 'pipeline_elt/src/**'
