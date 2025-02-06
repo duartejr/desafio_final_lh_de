@@ -7,7 +7,6 @@ resources:
       schedule:
         quartz_cron_expression: "0 0 0 * * ?" # daily at midnight
         timezone_id: UTC
-        pause_status: PAUSED
 
       email_notifications:
         on_failure:
