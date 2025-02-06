@@ -101,7 +101,7 @@ Get-Content .env | ForEach-Object { if ($_ -match "^(.*?)=(.*)$") { Set-Item -Pa
 
 ## Workflows
 
-Este repositório utiliza workflows para automatizar processos de deploy da infraestrura e do bundle do Databricks. Confira os arquivos na pasta `.github/workflows` para mais detalhes sobre os workflows configurados, ou acesse aqui o README dos workflows disponíveis. Assim, o deploy pode ser feito de forma automática, utilizando os workflows, ou manualmente como descrito a seguir.
+Este repositório utiliza workflows para automatizar processos de deploy da infraestrura e do bundle do Databricks. Confira os arquivos na pasta `.github/workflows` para mais detalhes sobre os workflows configurados, ou acesse aqui o [README](https://github.com/duartejr/deafio_final_lh_de/blob/a4da62bf31d571edc9243562d8f321bd7dd392ec/.github/workflows/README.md) dos workflows disponíveis. Assim, o deploy pode ser feito de forma automática, utilizando os workflows, ou manualmente como descrito a seguir.
 
 ## Deploy do Terraform
 
@@ -170,7 +170,7 @@ key é o nome da secret e string_value é o valor da mesma. Para executar esse p
 - port_mssql : Porta do banco de dados
 - user_mssql : Usuário do banco de dados
 
-OBS: Se for contribuir com o projeto diretamente no repositório atual, e realizar o deploy apenas através dos workflows axistentes, a declaração dessas variáveis não é necessárias por já estarem declaradas dentro do repositório. Mas, no caso de criar um fork do mesmo será necessário declarar as mesmas no ambiente do Github como descrito no README correspondente aos workflows.
+OBS: Se for contribuir com o projeto diretamente no repositório atual, e realizar o deploy apenas através dos workflows axistentes, a declaração dessas variáveis não é necessárias por já estarem declaradas dentro do repositório. Mas, no caso de criar um fork do mesmo será necessário declarar as mesmas no ambiente do Github como descrito no [README](https://github.com/duartejr/deafio_final_lh_de/blob/a4da62bf31d571edc9243562d8f321bd7dd392ec/.github/workflows/README.md) correspondente aos workflows.
 
 ### Deploy no Databricks
 
