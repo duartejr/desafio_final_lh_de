@@ -19,7 +19,7 @@ resources:
             parameters: ["-o", "${var.pipeline_owner}", "-e", "${bundle.environment}", "-d", "2007-01-01 00:00:00"]
           existing_cluster_id: 0114-120134-85ri2w59
         
-        - task_key: load_stage_data_taskd
+        - task_key: load_stage_data_task
           spark_python_task:
             python_file: ../src/load_stage.py
             parameters: ["-o", "${var.pipeline_owner}", "-e", "${bundle.environment}"]
