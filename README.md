@@ -5,6 +5,12 @@
 
 O objetivo deste projeto é implementar o processo de extração de dados de um banco de dados Microsoft SQLServer usando Databricks disponbilizando tabelas staging. O projeto está dividido em duas pastas: infra e pipeline_elt. A pasta infra contém arquivos terraform para criação de catologs e schemas necessários para a ingestão dos dados no Databricks utilizando Terraform. A pasta pipeline_elt contém o bundle do Databricks com a criação do scripts e workflow para automatizar o processo. Este projeto foi desenvolvido para extrair todas as tabelas do departamente de `sales` do banco de dados da `AdventureWorks`. 
 
+## Fluxograma
+
+A figura a seguir descreve a pipeline de dados do projeto. Os dados são extraídos do banco de dados utilizando Spark e inseridos em um catalog `raw`. Depois um script de transformação, usando Spark, transforma e ingere os dados em um catalog `staging`. A automação dos jobs e armazeamento é feita toda dentro do Databricks. Ambos os catalogs utilizam tabelas delta para o armazenamento de dados.
+
+![Pipeline de Dados](./imgs/pipeline.png)
+
 ## Estrutura do Projeto
 
 - `infra/`: Contém arquivos Terraform para criação de catálogos e esquemas necessários.
