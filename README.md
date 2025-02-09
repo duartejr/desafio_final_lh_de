@@ -3,7 +3,7 @@
 
 # Migração Databricks
 
-O objetivo deste projeto é implementar o processo de extração de dados de um banco de dados Microsoft SQLServer usando Databricks disponbilizando tabelas staging. O projeto está dividido em duas pastas: infra e pipeline_elt. A pasta infra contém arquivos terraform para criação de catologs e schemas necessários para a ingestão dos dados no Databricks utilizando Terraform. A pasta pipeline_elt contém o bundle do Databricks com a criação do scripts e workflow para automatiza o processo. Este projeto foi desenvolvido para extrair todas as tabelas do departamente de `sales` do banco de dados da `AdventureWorks`. 
+O objetivo deste projeto é implementar o processo de extração de dados de um banco de dados Microsoft SQLServer usando Databricks disponbilizando tabelas staging. O projeto está dividido em duas pastas: infra e pipeline_elt. A pasta infra contém arquivos terraform para criação de catologs e schemas necessários para a ingestão dos dados no Databricks utilizando Terraform. A pasta pipeline_elt contém o bundle do Databricks com a criação do scripts e workflow para automatizar o processo. Este projeto foi desenvolvido para extrair todas as tabelas do departamente de `sales` do banco de dados da `AdventureWorks`. 
 
 ## Estrutura do Projeto
 
@@ -35,7 +35,7 @@ cd desafio_final_lh_de
 
     Se preferir também pode configurar a autenticação do Databricks utilizando a autenticação OAuth machine-to-machine (M2M). Para mais detalhes consulte a seção conrrespondente no seguinte endereço: https://learn.microsoft.com/pt-pt/azure/databricks/dev-tools/cli/authentication 
   
-  Adicionalmente você também pode instalar a extensão do Databricks para o Visual Studio Code: https://learn.microsoft.com/pt-pt/azure/databricks/dev-tools/vscode-ext/ . Esta extensão trás ferramentas que facilitam as estapas de CI/CD dos bundles no Databricks. Com ela você poderá arquivos de código Python locais em clusters do Databricks em seus espaços de trabalho remoto. Também permite sincronizar seus códigos locais com o código em seus espaços de trabalho remotos.
+  Adicionalmente você também pode instalar a extensão do Databricks para o Visual Studio Code: https://learn.microsoft.com/pt-pt/azure/databricks/dev-tools/vscode-ext/ . Esta extensão trás ferramentas que facilitam as estapas de CI/CD dos bundles no Databricks. Com ela você poderá executar arquivos de código Python locais diretamente em clusters do Databricks em seus espaços de trabalho remoto. Ela também permite sincronizar seus códigos locais com o código em seus espaços de trabalho remotos.
 
 
 ### Instalação do Terraform
@@ -72,7 +72,7 @@ Após a conclusão dos passos anteriores é necessário criar um ambiente virtua
 
 ####
 
-Com o ambiente virtual ativo instale os pacotes e bibliotecas necessários podem ser instalados instalados através do arquivo `requirements.txt`da seguinte forma:
+Com o ambiente virtual ativo instale os pacotes e bibliotecas necessários. Os mesmos podem ser instalados instalados através do arquivo `requirements.txt` da seguinte forma:
 ```sh
 pip install -r requirements.txt
 ```
@@ -81,8 +81,8 @@ pip install -r requirements.txt
 
 Para exportar variáveis de ambiente a partir de um arquivo `.env`, inclua as variáveis no arquivo `.env` no seguinte formato:
 ```
-VARIAVEL_EXEMPLO=valor_exemplo
-OUTRA_VARIAVEL=outro_valor
+export VARIAVEL_EXEMPLO=valor_exemplo
+export OUTRA_VARIAVEL=outro_valor
 ```
 
 Utilize o arquivo `.env.example` como base para a declaração das variáveis de ambiente. Ele contém a lista de todas as variáveis necessárias. Preencha os valores corretamente, renomeio para `.env` e siga para o próximo passo.
@@ -146,7 +146,7 @@ Primeio você deve criar um Secret Scope, que é um espaço seguro, dentor do Da
 
 Execute o seguinte comando para criar um scope:
 ```sh
-databricks bundle create-scope --scope seu_nome_adw
+databricks bundle create-scope --scope nome_desenvolvedor_adw
 ``` 
 
 É esperado que o scope criado tenha o nome do desenvolvedor seguido de _adw.
@@ -164,7 +164,7 @@ databricks secrets put-secret --json '{
 }'
 ```
 
-key é o nome da secret e string_value é o valor da mesma. Para executar esse projeto as secrets necessárias são: 
+`key` é o nome da secret e `string_value` é o valor da mesma. Para executar esse projeto as secrets necessárias são: 
 - pswd_mssql : Senha de acesso ao banco de dados
 - ip_mssql : IP de acesso ao banco de dados
 - port_mssql : Porta do banco de dados
@@ -190,7 +190,7 @@ OBS: Se for contribuir com o projeto diretamente no repositório atual, e realiz
     $ databricks bundle run
     ```
 
-Jobs e pipelines quando feito deploy no ambiente de prod ficam com o status de PAUSED por padrão. Ou seja, esses jobs só serão disparados manualmente. Já quando feito o deploy em prod os mesmos ficaram ativos e seguiram as regras manualmente, o usuário deverá pausar os mesmos manualmente caso deseje.
+Jobs e pipelines quando feito deploy no ambiente de `dev` ficam com o status de PAUSED por padrão. Ou seja, esses jobs só serão disparados manualmente. Já quando feito o deploy em `prod` os mesmos ficaram ativos e seguiram as regras manualmente, o usuário deverá pausar os mesmos manualmente caso deseje.
 
 ### Jobs utilizados na pipeline
 
@@ -198,7 +198,7 @@ A pipeline criada utiliza duas tasks.
 - extract_raw_data_task : Realiza a extração dos dados diretamente do banco de dados e armazena no catalog de dados raw. 
 - load_stage_data_task : Lê os dados salvos no schema de raw, aplica as transformações necessárias e salva no schema de staging correspondente para cada tabela.
 
-A extração é feita é feita de forma incremental e pode ser configurada através do arquivo `resources.yml` que é o responsável por configurar os workflows do Databricks. O segmento de código a seguir apresenta um exemplo de como realizar a extração de dados com data de atualização entre 01/01/2007 e o dia de hoje.
+A extraçãoé feita de forma incremental e pode ser configurada através do arquivo `resources.yml` que é o responsável por configurar os workflows do Databricks. O segmento de código a seguir apresenta um exemplo de como realizar a extração de dados com data de atualização entre 01/01/2007 e o dia de hoje.
 
 ```yml
 - task_key: extract_raw_data_task
@@ -245,6 +245,15 @@ CountryRegionCurrency:
       ModifiedDate: modified_date
       extract_date: extract_date
 ```
+A primeira linha é o nome da tabela que será extraída do banco de dados, deve ser o mesmo nome utilizado no banco de dados.
+
+`primary_key`- É o nome da coluna, ou conjunto de colunas, utilizada para identificar registros únicos nas tabelas, é o prâmetro utilizado no merge durante o carrregamento das tabelas staging. Portanto deve ser o nome que será utilizado nas colunas das tabelas staging.
+
+`stg_name` - É o nome que será utilizado para a tabela de staging.
+
+`stg_columns` - Mapeia as colunas raw `chaves` e seu respectivo nome das tabelas `staging`.
+
+As transformações aplicadas para as tabela stagins são: padronização dos nomes de colunas, remoção de dados duplicados. O tipos de dados das colunas são mantidos os mesmos do banco de dados original.
 
 ## Contribuição
 

@@ -1,20 +1,35 @@
-import yaml 
+import yaml
 import logging
 import argparse
+from functools import partial
 from pyspark.sql.functions import lit
 from datetime import datetime, timedelta
-from functools import partial
 from concurrent.futures import ThreadPoolExecutor
 
-parser = argparse.ArgumentParser(description="Extracts raw data from the source and stores it in the raw catalog.")
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+parser = argparse.ArgumentParser(
+    description="Extracts raw data from the source and stores it in the raw catalog."
+)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 parser.add_argument("--owner", "-o", type=str, help="The owner of this pipeline.")
-parser.add_argument("--environment", "-e", type=str, help="Bundle target environment: dev or prod")
-parser.add_argument("--first_modified_date", "-d", type=str, default="", help="First modified date for extraction.")
-parser.add_argument("--lag", "-l", type=int, default=7, help="Number of past days for data extraction.")
+parser.add_argument(
+    "--environment", "-e", type=str, help="Bundle target environment: dev or prod"
+)
+parser.add_argument(
+    "--first_modified_date",
+    "-d",
+    type=str,
+    default="",
+    help="First modified date for extraction.",
+)
+parser.add_argument(
+    "--lag", "-l", type=int, default=7, help="Number of past days for data extraction."
+)
 
 args = parser.parse_args()
+
 
 def read_yaml_file(filepath: str) -> dict:
     """
@@ -22,7 +37,7 @@ def read_yaml_file(filepath: str) -> dict:
 
     Args:
         filepath (str): The path to acces the yaml file.
-    
+
     Returns:
         dict : A dictionary with the content of the yaml file.
     """
@@ -38,8 +53,13 @@ def read_yaml_file(filepath: str) -> dict:
         raise
 
 
-def extract_data(table_name: str, catalog: str, schema: str, first_modified_date: str, 
-                 environment:str) -> None:
+def extract_data(
+    table_name: str,
+    catalog: str,
+    schema: str,
+    first_modified_date: str,
+    environment: str,
+) -> None:
     """
     A function to extract data from a table.
 
@@ -54,15 +74,11 @@ def extract_data(table_name: str, catalog: str, schema: str, first_modified_date
     delta_table_name = f"{catalog}.{environment}_raw_{schema}.raw_{table_name}"
     logging.info(f"Extracting data to: {table_name}")
 
-    # Query to select data accoding with the ModifiedDate column
+    # Query to select data according with the ModifiedDate column
     query = f"(SELECT * FROM {schema}.{table_name} WHERE ModifiedDate >= '{first_modified_date}') AS subquery"
 
     # Read data from the database
-    df = spark.read.jdbc(
-        url=jdbc_url,
-        table=query,
-        properties=connection_properties
-    )
+    df = spark.read.jdbc(url=jdbc_url, table=query, properties=connection_properties)
 
     # Insert a column into the dataframe with the extraction date
     df = df.withColumn("extract_date", lit(datetime.today()))
@@ -71,6 +87,7 @@ def extract_data(table_name: str, catalog: str, schema: str, first_modified_date
     logging.info(f"Saving data into: {delta_table_name}")
     df.write.mode("overwrite").format("delta").saveAsTable(delta_table_name)
     logging.info("Successfully loaded raw data into destination table.")
+
 
 if __name__ == "__main__":
     owner = args.owner
@@ -82,7 +99,7 @@ if __name__ == "__main__":
 
     if parameters:
         logging.info("Successfully loaded YAML data.")
-        database =  parameters["database"]
+        database = parameters["database"]
         schema = parameters["schema"]
         tables_list = list(parameters["tables"].keys())
         catalog = f"{owner}_raw"
@@ -93,21 +110,27 @@ if __name__ == "__main__":
 
         if not len(first_modified_date):
             first_modified_date = datetime.today() - timedelta(days=lag_days)
-            first_modified_date = first_modified_date.strftime('%Y-%m-%d 00:00:00')
+            first_modified_date = first_modified_date.strftime("%Y-%m-%d 00:00:00")
 
         logging.info(f"First modified data to extraction: {first_modified_date}")
 
         jdbc_url = f"jdbc:sqlserver://{db_host}:{db_port};databaseName={database};encrypt=true;trustServerCertificate=true;"
 
         connection_properties = {
-            "user": db_user, 
+            "user": db_user,
             "password": db_password,
-            "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+            "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
         }
-        
-        extract_data_partial = partial(extract_data, catalog=catalog, schema=schema, first_modified_date=first_modified_date, environment=environment)
+
+        extract_data_partial = partial(
+            extract_data,
+            catalog=catalog,
+            schema=schema,
+            first_modified_date=first_modified_date,
+            environment=environment,
+        )
 
         with ThreadPoolExecutor(max_workers=8) as executor:
             executor.map(extract_data_partial, tables_list)
-        
+
         logging.info("Extraction finished.")
